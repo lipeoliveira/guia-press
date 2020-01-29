@@ -1,0 +1,34 @@
+{
+  "name": "guia-press",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lipeoliveira/guia-press.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lipeoliveira/guia-press/issues"
+  },
+  "homepage": "https://github.com/lipeoliveira/guia-press#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.21.3",
+    "slugify": "^1.3.6",
+    "slugy": "^1.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
