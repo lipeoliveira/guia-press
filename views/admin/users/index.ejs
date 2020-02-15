@@ -1,0 +1,35 @@
+<%- include('../../partials/header'); %>
+<%- include('../../partials/navbar'); %>
+    <div class="container">
+        <hr>
+            <h3>Usuários</h3>
+            <a href="/admin/users/create" class="btn btn-dark">Novo</a>
+        <hr>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <!-- <th>Ações</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%- user.id %></td>
+                        <td><%- user.email %></td>
+                        <!-- <td class="d-flex">
+                            <form class="mx-1" action="/admin/articles/edit/<%-user.id %>"> 
+                                <button type="submit" class="btn btn-warning">Editar</button>
+                            </form>
+
+                            <form id='remove-article' class="mx-1" action="/admin/articles/delete/<%-user.id %>">
+                                <button type="submit" class="btn btn-danger">Excluir</button>                                
+                            </form>
+                        </td> -->
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+<%- include('../../partials/footer'); %>

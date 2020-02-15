@@ -2,69 +2,75 @@ const express = require('express')
 const router = express.Router()
 const Category = require('./Category')
 const slugify = require('slugify')
+const admAuth = require('../middleware/adminAuth')
 
-router.get('/admin/categories/new', (req, res) => {
+router.get('/admin/categories/new', admAuth, (req, res) => {
   res.render('admin/categories/new')
 })
 
-router.post('/categories/save', (req, res) => {
+router.post('/categories/save', admAuth, async (req, res) => {
   const { title } = req.body
-
-  if (title) {
-    Category.create({ title: title, slug: slugify(title) }).then(() => {
-      res.redirect('/admin/categories')
-    })
-  } else {
+  if (!title) {
+    return res.redirect('/admin/categories/new')
+  }
+  try {
+    await Category.create({ title: title, slug: slugify(title) })
+    res.redirect('/admin/categories')
+  } catch (error) {
     res.redirect('/admin/categories/new')
   }
 })
 
-router.get('/admin/categories', (req, res) => {
-  Category.findAll().then(categories => {
-    res.render('admin/categories/index', {
-      categories
-    })
-  })
-})
-
-router.get('/categories/edit/:id', (req, res) => {
-  const { id } = req.params
-
-  if (id && !isNaN(id)) {
-    Category.findOne({ id }).then(category => {
-      res.render('admin/categories/edit', { category })
-    })
-  } else {
+router.get('/admin/categories', admAuth, async (req, res) => {
+  try {
+    const categories = await Category.findAll()
+    res.render('admin/categories/index', { categories })
+  } catch (error) {
     res.redirect('/admin/categories')
   }
 })
 
-router.post('/categories/update', (req, res) => {
-  const { id, title } = req.body
+router.get('/categories/edit/:id', admAuth, async (req, res) => {
+  const { id } = req.params
+  if (!id || isNaN(id)) {
+    return res.redirect('/admin/categories')
+  }
 
-  if (id && !isNaN(id)) {
-    Category.findOne({ id }).then(category => {
-      category.title = title
-      category.save().then(() => {
-        res.redirect('/admin/categories')
-      })
-    })
-  } else {
-    res.redirect('/admin/categories/edit', {
-      id,
-      title
-    })
+  try {
+    const category = await Category.findOne({ id })
+    res.render('admin/categories/edit', { category })
+  } catch (error) {
+    return res.redirect('/admin/categories')
   }
 })
 
-router.get('/categories/delete/:id', (req, res) => {
-  const { id } = req.params
+router.post('/categories/update', admAuth, async (req, res) => {
+  const { id, title } = req.body
+  if (!id || isNaN(id)) {
+    return res.redirect('/admin/categories')
+  }
 
-  if (id && !isNaN(id)) {
-    Category.destroy({ where: { id } }).then(() => {
-      res.redirect('/admin/categories')
-    })
-  } else {
+  try {
+    await Category.update(
+      { title: title, slug: slugify(title) },
+      { where: { id: id } }
+    )
+    res.redirect('/admin/categories')
+  } catch (error) {
+    return res.redirect('/admin/categories')
+  }
+})
+
+router.get('/categories/delete/:id', admAuth, async (req, res) => {
+  const { id } = req.params
+  if (!id || isNaN(id)) {
+    return res.redirect('/admin/categories')
+  }
+
+  try {
+    await Category.destroy({ where: { id } })
+    res.redirect('/admin/categories')
+  } catch (error) {
     res.redirect('/admin/categories')
   }
 })
